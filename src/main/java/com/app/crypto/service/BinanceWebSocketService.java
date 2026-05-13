@@ -3,6 +3,8 @@ package com.app.crypto.service;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.time.Duration;
+import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -27,15 +29,13 @@ public class BinanceWebSocketService {
 
   private final ObjectMapper objectMapper;
 
-  private String binanceWsUrl = buildStreamUrl();
-
   private ConcurrentHashMap<String, BigDecimal> latestPrices = new ConcurrentHashMap<>();
 
   public void connect() {
 
     ReactorNettyWebSocketClient client = new ReactorNettyWebSocketClient();
 
-    URI uri = URI.create(binanceWsUrl);
+    URI uri = URI.create(buildStreamUrl());
 
     client.execute(uri, session -> session.receive()
         .map(WebSocketMessage::getPayloadAsText)
@@ -69,6 +69,11 @@ public class BinanceWebSocketService {
 
     return price;
 
+  }
+
+  public Map<String, BigDecimal> getAllPrices() {
+
+    return Collections.unmodifiableMap(latestPrices);
   }
 
   private String buildStreamUrl() {

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.app.crypto.model.Order;
 import com.app.crypto.model.OrderRequest;
-import com.app.crypto.model.TickerPrice;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 public class OrderService {
 
   private final List<Order> orders = new CopyOnWriteArrayList<>();
-  private final BinanceService binanceService;
+
   private final BinanceWebSocketService binanceWebSocketService;
 
   public Order placeOrder(OrderRequest request) {

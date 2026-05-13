@@ -19,12 +19,11 @@ public class OrderService {
 
   private final List<Order> orders = new CopyOnWriteArrayList<>();
   private final BinanceService binanceService;
+  private final BinanceWebSocketService binanceWebSocketService;
 
   public Order placeOrder(OrderRequest request) {
 
-    TickerPrice tickerPrice = binanceService.getPrice(request.getSymbol());
-
-    BigDecimal price = new BigDecimal(tickerPrice.getPrice());
+    BigDecimal price = binanceWebSocketService.getPrice(request.getSymbol());
 
     Order order = Order.create(request.getSymbol(), request.getSide(), request.getQuantity(), price);
 

@@ -3,17 +3,14 @@ package com.app.crypto.service;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import com.app.crypto.dto.request.PriceAlertRequest;
 import com.app.crypto.model.PriceAlert;
+import com.app.crypto.repository.PriceAlertRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PriceAlertService {
 
-  private final List<PriceAlert> alerts = new CopyOnWriteArrayList<>();
+  private final PriceAlertRepository priceAlertRepository;
 
   private final SimpMessagingTemplate simpMessagingTemplate;
 
@@ -31,10 +28,9 @@ public class PriceAlertService {
 
     BigDecimal currentPrice = binanceWebSocketService.getPrice(priceAlertRequest.getSymbol());
 
-    String direction = priceAlertRequest.getTargetPrice().compareTo(currentPrice) >= 0 ? "ABOVE" : "BELOW";
+    String direction = priceAlertRequest.getTargetPrice().compareTo(currentPrice) > 0 ? "ABOVE" : "BELOW";
 
     PriceAlert alert = PriceAlert.builder()
-        .id(UUID.randomUUID().toString())
         .symbol(priceAlertRequest.getSymbol())
         .directionl(direction)
         .triggered(false)
@@ -42,21 +38,17 @@ public class PriceAlertService {
         .targetPrice(priceAlertRequest.getTargetPrice())
         .build();
 
-    alerts.add(alert);
-
-    return alert;
+    return priceAlertRepository.save(alert);
   }
 
   public List<PriceAlert> getAllAlerts() {
 
-    return new ArrayList<PriceAlert>(alerts);
+    return priceAlertRepository.findAll();
   }
 
   public void checkAlerts(String symbol, BigDecimal currentPrice) {
 
-    alerts.stream()
-        .filter(a -> a.getSymbol().equals(symbol))
-        .filter(a -> !a.isTriggered())
+    priceAlertRepository.findBySymbolAndTriggeredFalse(symbol)
         .forEach(alert -> {
 
           boolean triggered = false;
@@ -74,7 +66,7 @@ public class PriceAlertService {
 
             alert.setTriggered(true);
             alert.setTriggeredAt(Instant.now());
-
+            priceAlertRepository.save(alert);
             simpMessagingTemplate.convertAndSend(
                 "/topic/alerts",
                 (Object) Map.of(

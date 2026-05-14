@@ -1,0 +1,5 @@
+FROM postgres:16
+
+ENV POSTGRES_DB=cryptodb
+ENV POSTGRES_USER=crypto
+ENV POSTGRES_PASSWORD=crypto123

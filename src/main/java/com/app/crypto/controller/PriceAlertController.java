@@ -13,6 +13,7 @@ import com.app.crypto.dto.request.PriceAlertRequest;
 import com.app.crypto.model.PriceAlert;
 import com.app.crypto.service.PriceAlertService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -23,7 +24,7 @@ public class PriceAlertController {
   private final PriceAlertService priceAlertService;
 
   @PostMapping
-  public ResponseEntity<PriceAlert> createAlert(@RequestBody PriceAlertRequest request) {
+  public ResponseEntity<PriceAlert> createAlert(@Valid @RequestBody PriceAlertRequest request) {
 
     PriceAlert alert = priceAlertService.createAlert(request);
 

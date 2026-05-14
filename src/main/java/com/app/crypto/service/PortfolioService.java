@@ -24,6 +24,10 @@ public class PortfolioService {
 
     List<String> coins = orderRepository.findDistinctSymbol();
 
+    for (String coin : coins) {
+      System.out.println(coin);
+    }
+
     return coins.stream()
         .map(this::buildEntry)
         .filter(entry -> entry.getTotalQuantity().compareTo(BigDecimal.ZERO) > 0)
@@ -37,25 +41,29 @@ public class PortfolioService {
 
     List<Order> buys = orders
         .stream()
-        .filter(o -> o.getSide().equals("BUY"))
+        .filter(o -> o.getSide().equals("buy"))
         .collect(Collectors.toList());
 
     List<Order> sells = orders
         .stream()
-        .filter(o -> o.getSide().equals("SELL"))
+        .filter(o -> o.getSide().equals("sell"))
         .collect(Collectors.toList());
 
     BigDecimal totalCoinsBought = buys
         .stream()
         .map(Order::getQuantity)
         .reduce(BigDecimal.ZERO, BigDecimal::add);
+    System.out.println(totalCoinsBought.toString());
 
     BigDecimal totalCoinsSold = sells
         .stream()
         .map(Order::getQuantity)
         .reduce(BigDecimal.ZERO, BigDecimal::add);
+    System.out.println(totalCoinsSold.toString());
 
     BigDecimal totalCoinsQuantity = totalCoinsBought.subtract(totalCoinsSold);
+
+    System.out.println(totalCoinsQuantity.toString());
 
     BigDecimal totalSpent = buys
         .stream()
@@ -73,13 +81,12 @@ public class PortfolioService {
 
     return PortfolioEntry.builder()
         .symbol(symbol)
-        .totalQuantity(totalCoinsQuantity)
-        .averageBuyPrice(averageBuyPrice)
-        .currentPrice(currentPrice)
-        .currentValue(currentValue)
-        .profitLoss(profitLoss)
+        .totalQuantity(totalCoinsQuantity.setScale(2, RoundingMode.HALF_UP))
+        .averageBuyPrice(averageBuyPrice.setScale(2, RoundingMode.HALF_UP))
+        .currentPrice(currentPrice.setScale(2, RoundingMode.HALF_UP))
+        .currentValue(currentValue.setScale(2, RoundingMode.HALF_UP))
+        .profitLoss(profitLoss.setScale(2, RoundingMode.HALF_UP))
         .build();
-
   }
 
 }

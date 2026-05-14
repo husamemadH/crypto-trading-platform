@@ -53,17 +53,13 @@ public class PortfolioService {
         .stream()
         .map(Order::getQuantity)
         .reduce(BigDecimal.ZERO, BigDecimal::add);
-    System.out.println(totalCoinsBought.toString());
 
     BigDecimal totalCoinsSold = sells
         .stream()
         .map(Order::getQuantity)
         .reduce(BigDecimal.ZERO, BigDecimal::add);
-    System.out.println(totalCoinsSold.toString());
 
     BigDecimal totalCoinsQuantity = totalCoinsBought.subtract(totalCoinsSold);
-
-    System.out.println(totalCoinsQuantity.toString());
 
     BigDecimal totalSpent = buys
         .stream()

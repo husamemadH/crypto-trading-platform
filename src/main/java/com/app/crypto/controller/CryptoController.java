@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.app.crypto.dto.request.OrderRequest;
 import com.app.crypto.model.Order;
+import com.app.crypto.model.OrderHistory;
 import com.app.crypto.service.BinanceWebSocketService;
 import com.app.crypto.service.OrderService;
 
@@ -45,6 +46,12 @@ public class CryptoController {
   public ResponseEntity<List<Order>> getOrders() {
 
     return ResponseEntity.ok().body(orderService.getAllOrders());
+  }
+
+  @GetMapping("/order/{symbol}")
+  public ResponseEntity<OrderHistory> getCoinOrderHistory(@PathVariable String symbol) {
+
+    return ResponseEntity.ok(orderService.getHistory(symbol));
   }
 
 }

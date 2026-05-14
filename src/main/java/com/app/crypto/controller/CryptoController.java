@@ -11,10 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.app.crypto.dto.request.OrderRequest;
 import com.app.crypto.model.Order;
-import com.app.crypto.model.OrderRequest;
-import com.app.crypto.model.TickerPrice;
-import com.app.crypto.service.BinanceService;
+import com.app.crypto.service.BinanceWebSocketService;
 import com.app.crypto.service.OrderService;
 
 import jakarta.validation.Valid;
@@ -25,14 +24,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CryptoController {
 
-  private final BinanceService binanceService;
+  private final BinanceWebSocketService binanceWebSocketService;
   private final OrderService orderService;
 
   @GetMapping("/price/{symbol}")
   public ResponseEntity<BigDecimal> getPrice(@PathVariable String symbol) {
-    TickerPrice tickerPrice = binanceService.getPrice(symbol);
 
-    return ResponseEntity.ok(new BigDecimal(tickerPrice.getPrice()));
+    return ResponseEntity.ok(binanceWebSocketService.getPrice(symbol));
 
   }
 

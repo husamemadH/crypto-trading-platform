@@ -1,4 +1,4 @@
-package com.app.crypto.model;
+package com.app.crypto.dto.request;
 
 import java.math.BigDecimal;
 

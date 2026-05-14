@@ -7,9 +7,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.springframework.stereotype.Service;
 
+import com.app.crypto.dto.request.OrderRequest;
 import com.app.crypto.model.Order;
-import com.app.crypto.model.OrderRequest;
-
 import lombok.RequiredArgsConstructor;
 
 @Service
